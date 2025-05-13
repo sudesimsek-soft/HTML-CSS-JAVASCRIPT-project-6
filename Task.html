@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+  <body>
+    <div class="container bg-secondary text-center p-5">
+      <div class="row">
+        <div class="col-10" >
+          <img src="beko.png"  style="height: 100px;">
+        </div>
+      </div>
+      <br>
+      <div class="row justify-content-center">
+        <div class="col-10">
+          <input placeholder="Adet giriniz" name="amount" id="amount" type="number" class="form-control">
+        </div>
+      </div>
+      <br>
+      <div class="row justify-content-center">
+        <div class="col-10">
+          <select name="product" id="product" class="form-control">
+            <option disabled selected value="">
+              Ürün Seçiniz....
+            </option>
+            <option value="1">
+              1 - Buzdolabı (3250)
+            </option>
+            <option value="2">
+              2 - Çamaşır Makinesi (5750)
+            </option>
+            <option value="3">
+              3 - Televizyon (12000)
+            </option>
+            <option value="4">
+              4 - Ütü (3000)
+            </option>
+          </select>
+        </div>
+      </div>
+      <br>
+      <div class="row justify-content-center">
+        <div class="col-10">
+          <select name="gtype" id="gtype" class="form-control">
+            <option disabled selected value="">
+              Granti Seçeneği Seçiniz....
+            </option>
+            <option value="1">
+              Garanti yok
+            </option>
+            <option value="2">
+              10 yıllık garanti (%20 fiyat farkı)
+            </option>
+          </select>
+        </div>
+      </div>
+      <br>
+      <div class="row justify-content-center">
+        <div class="col-10">
+          <button  onclick="addProduct()" class="btn btn-success btn-block">Ürün Ekle</button>
+        </div>
+      </div>
+      <br>
+      <div class="row justify-content-center">
+        <div class="col-10">
+          <table id="plist" name="plist" class="table">
+            <thead>
+              <th>
+                ID
+              </th>
+              <th>
+                Fiyat
+              </th>
+              <th>
+                Adet
+              </th>
+              <th>
+                Toplam Tutar
+              </th>
+            </thead>
+          </table>
+        </div>
+      </div>
+      <br>
+      <div class="row justify-content-center">
+        <div class="col-10">
+          <button onclick="showTotal()" class="btn btn-info btn-block">Toplam Tutarı Göster</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      let amountTx = document.getElementById("amount");
+      let pSelect = document.getElementById("product");
+      let gSelect = document.getElementById("gtype");
+      let pTable = document.getElementById("plist");
+      let products = new Map();
+      products.set("1",3250);
+      products.set("2",5750);
+      products.set("3",12000);
+      products.set("4",3000);
+      let addedIDs = new Set();
+      let totalPrice = 0;
+      function remove(){
+        pTable.removeChild(this.parentNode.parentNode);
+      };
+      function addProduct()
+      {
+        if(amountTx.value =="" || pSelect.value =="" || gSelect.value == "")
+        {
+          alert("Lütfen tüm değerleri doldurunuz...");
+        }
+        else if(addedIDs.has(pSelect.value))
+        {
+          alert("Bir ürün iki kere seçilemez!!");
+        }
+        else
+        {
+          let price =parseInt( products.get(pSelect.value)); 
+          let total = price *parseInt(amountTx.value);
+          if(gSelect.value =="2")
+             total *= 1.2;
+          totalPrice += total;
+          addedIDs.add(pSelect.value);
+          let trNew = document.createElement("tr"); 
+          let tdID = document.createElement("td");
+          tdID.appendChild(document.createTextNode(pSelect.value)); 
+          let tdPrice = document.createElement("td");
+          tdPrice.appendChild(document.createTextNode(price.toString())); 
+          let tdAmount = document.createElement("td");
+          tdAmount.appendChild(document.createTextNode(amountTx.value)); 
+          let tdTotal = document.createElement("td");
+          tdTotal.appendChild(document.createTextNode(total.toString())); 
+          var tdRemove = document.createElement("td");
+          let removeBtn=  document.createElement("button");
+          removeBtn.innerHTML = "Hide";
+          removeBtn.className = "btn btn-danger";
+          removeBtn.onclick = remove;
+          tdRemove.appendChild(removeBtn);
+          trNew.appendChild(tdID);
+          trNew.appendChild(tdPrice);
+          trNew.appendChild(tdAmount);
+          trNew.appendChild(tdTotal);
+          trNew.appendChild(tdRemove);
+          pTable.appendChild(trNew);
+          amountTx.value="";
+          gSelect.value="";
+          pSelect.value="";
+        }
+      }
+      function showTotal()
+      {
+        alert("Total Price : "+totalPrice.toString());
+      }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
+
